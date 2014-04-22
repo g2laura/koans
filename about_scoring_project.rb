@@ -29,8 +29,59 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
+def process_set(array)
+  points = 0
+  points_three_times = 0
+  points_less_than_3_times = 0
+
+  case array.first
+    when 1
+      points_three_times = 1000
+      points_less_than_3_times = 100
+    when 5
+      points_three_times = 500
+      points_less_than_3_times = 50
+  end
+
+  case array.size
+    when 0
+    when 1..2
+      points += points_less_than_3_times * array.size
+    when 3
+      points += points_three_times
+    else
+      rest = array.size - 3
+      points += points_three_times
+      points += points_less_than_3_times * rest
+  end
+  return points
+end
+
 def score(dice)
-  # You need to write this method
+  points = 0
+  ones = []
+  fives = []
+
+  set = dice.select{|element| dice.count(element) > 2 }
+  set.uniq.each do |number|
+    unless (number === 1) or (number === 5)
+      points += number * 100
+    end
+  end
+
+  dice.each do |value|
+    if value === 1
+      ones.push(value)
+    end
+    if value === 5
+      fives.push(value)
+    end
+  end
+
+  points += process_set(ones)
+  points += process_set(fives)
+
+  return points
 end
 
 class AboutScoringProject < Neo::Koan
